@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  </head>
+  <body>
+    <form action="index.html" method="post" id="login">
+        <label for="usernameLogin">Username</label>
+        <input type="text" id="usernameLogin" name="usernameLogin"/><br>
+
+        <button type="submit" name="submit" id="submit">Log In</button>
+    </form>
+    <form action="index.html" method="post" id="create">
+      <label for="firstName">Frist Name</label>
+      <input type="text" id="firstName" name="firstName"/><br>
+
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" name="lastName"/><br>
+
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email"/><br>
+
+      <label for="usernameCreate">Username</label>
+      <input type="text" id="usernameCreate" name="usernameCreate"/><br>
+
+      <button type="submit" name="submit" id="submit">Create Account</button>
+    </form>
+  </body>
+  <script>
+    $("#login").submit(function(event) {
+      var username = $('#usernameLogin').val();
+
+      let getCustomerUrl = "http://localhost:8080/online-store-app/store/customers/" + username;
+      $.get(getCustomerUrl).done(function(data){
+        if (data.username){
+          Cookies.set('username', username);
+          window.location.href = 'http://localhost:8080/online-store-app/UI';
+        }
+      }).fail(function(jqXHR){
+        if(jqXHR.status==500){
+          alert('Username not found. Please enter different name or create a new account.')
+        }
+      });
+
+      event.preventDefault();
+    });
+
+    $("#create").submit(function(event) {
+      var firstName = $('#firstName').val();
+      var lastName = $('#lastName').val();
+      var email = $('#email').val();
+      var username = $('#usernameCreate').val();
+
+      let postCustomerUrl = "http://localhost:8080/online-store-app/store/customers?fname=" +firstName+"&lname="+lastName+"&email="+email+"&username="+username;
+      $.post(postCustomerUrl).done(function(data){
+          Cookies.set('username', username);
+          window.location.href = 'http://localhost:8080/online-store-app/UI';
+      });
+
+      event.preventDefault();
+    });
+  </script>
+</html>

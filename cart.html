@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <title>My Cart</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</head>
+<style>
+ 
+  .table, table{
+    margin: auto;
+    width:90%;
+  }
+  ul{
+    list-style-type: none;
+  }
+  h3{
+  	margin: auto;
+  }
+  td{
+    text-align: left;
+    padding-top: 10px;
+  }
+</style>
+<body>
+<!--Navigation bar-->
+<div id="nav-placeholder">
+	
+</div>
+
+<!--end of Navigation bar-->
+
+
+<h2>Shopping Cart</h2>
+
+
+
+	<div id='cartItem'></div>
+
+
+<br>
+<table>
+	<tr>
+		<td><h3>Total</h3></td>
+		<td><div id="cartSum"></div></td>
+	</tr>
+	<tr>
+		<td><h3>Taxes</h3></td>
+		<td><div id="tax"></div></td>
+	</tr>
+	<tr>
+		<td><h3>Subtotal</h3></td>
+		<td><div id="total"></div></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><button type="button" class="btn btn-danger" ng-click="">PURCHASE</button></td>
+	</tr>
+</table>
+
+<script>
+
+$(function (){
+  $.get("http://localhost:8080/online-store-app/store/carts?username="+Cookies.get('username'), function(data){
+    var sum = 0, taxes = 0, total = 0;
+    console.log(Cookies.get('username'));
+        $('#cartItem').append(`
+        <tr>
+       		<th style="width:100px;">Product</th>
+       		<th style="width:100px;">Price</th>
+       	</tr>
+       		`);
+    for(let i=0;i<data.items.length;i++){
+      //console.log(data.items[i].salePrice);
+       $('#cartItem').append(`
+        <tr>
+        	<td>`+data.items[i].productName+`</td>
+        	<td>$`+data.items[i].salePrice+`</td>
+        </tr>
+          `);
+    }
+    //console.log(data.items.length);
+    
+    for(let i=0;i<data.items.length;i++){
+    	sum += data.items[i].salePrice;
+    	console.log(sum);
+    } 
+    $('#cartSum').append(`
+    	<p>$`+sum.toFixed(2)+`</p>
+    	`);
+    
+    taxes = 0.08 * sum;
+     $('#tax').append(`
+    	<p>$`+taxes.toFixed(2)+`</p>
+    	`);
+    
+    total = taxes + sum;
+    $('#total').append(`
+    	<p>$`+total.toFixed(2)+`</p>
+    	`);  
+    });
+
+  	
+
+  
+  });
+
+$(function(){
+  $("#nav-placeholder").load("header.html");
+});
+
+</script>
+
+</body>
+</html>

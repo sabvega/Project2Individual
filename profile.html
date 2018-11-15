@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <title>Profile</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<style>
+  td {
+    padding: 15px;
+    border: 2px solid black;
+  }
+</style>
+<body>
+<div id="nav-placeholder"></div>
+
+<div id="profile" style="margin-left: 45px;">
+  <div class="row">
+    <div class="col-sm-6">
+      <h4>User Profile</h4>
+    </div>
+    <div class="col-sm-6">
+      <h4>User's Cart Purchases</h4>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <table>
+          <tr>
+            <td >First Name:</td>
+            <td id="firstName"></td>
+          </tr>
+          <tr>
+            <td >Last Name:</td>
+            <td id="lastName"></td>
+          </tr>
+          <tr>
+            <td >Email:</td>
+            <td id="email"></td>
+          </tr>
+          <tr>
+            <td >Username:</td>
+            <td id="username"></td>
+          </tr>
+      </table>
+
+      <div style="margin-top: 20px;">
+        <button type="button" class="btn btn-danger" id="logoutButton">Log Out</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Edit Profile</button>
+      </div>
+
+    </div>
+    <div class="col-sm-6">
+      <table id='purchases'></table>
+    </div>
+  </div>
+</div>
+
+<div id="editProfileModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Profile</h4>
+      </div>
+      <div class="modal-body">
+        <form action="index.html" method="post" id="edit">
+          <label for="firstName">Frist Name</label>
+          <input type="text" id="firstNameEdit" name="firstName"/><br>
+
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastNameEdit" name="lastName"/><br>
+
+          <label for="email">Email</label>
+          <input type="text" id="emailEdit" name="email"/><br>
+
+          <button type="submit" name="submit" id="submit">Save</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+$(function(){
+  $("#nav-placeholder").load("header.html");
+  let username = Cookies.get('username');
+
+  let getCustomerUrl = "http://localhost:8080/online-store-app/store/customers/" + username;
+  $.get(getCustomerUrl).done(function(data){
+    $('#firstName').text(data.fname);
+    $('#lastName').text(data.lname);
+    $('#username').text(data.username);
+    $('#email').text(data.email);
+
+    $('#firstNameEdit').val(data.fname);
+    $('#lastNameEdit').val(data.lname);
+    $('#emailEdit').val(data.email);
+  });
+
+  let getCartUrl = "http://localhost:8080/online-store-app/store/carts?username=" + username;
+  $.get(getCartUrl).done(function(data){
+    for (let i=0; i<data.items.length; i++){
+      $('#purchases').append(`
+        <tr><td>`+ data.items[i].productName +`</td></tr>
+      `);
+    }
+  });
+
+  $('#logoutButton').click(function(){
+    Cookies.remove('username');
+    window.location.href = 'http://localhost:8080/online-store-app/ui/login.html';
+  });
+
+  $("#edit").submit(function(event) {
+    var firstName = $('#firstNameEdit').val();
+    var lastName = $('#lastNameEdit').val();
+    var email = $('#emailEdit').val();
+
+    let updateCustomerUrl = "http://localhost:8080/online-store-app/store/customers?fname=" +firstName+"&lname="+lastName+"&email="+email+"&username="+Cookies.get('username');
+    $.ajax({
+      url: updateCustomerUrl,
+      type: 'PUT',
+      success: function(data) {
+        alert('Profile saved!');
+        location.reload();
+      }
+    });
+
+    event.preventDefault();
+  });
+
+});
+
+</script>
+
+</body>
+</html>
