@@ -2,15 +2,18 @@
 <html>
 <head>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 </head>
 <style>
 	i{
 		font-size: 36px;
+		color: black;
 	}
 	a:visited, a:link{
 		color: black;
 	}
-	a:hover{
+	a:hover, a:active{
 		color: grey;
 	}
 	#left-side{
@@ -33,7 +36,25 @@
 
 <div id="right-side">
 	<a href="profile.html"><i class="fas fa-user-circle" style="padding-right: 20px;"></i></a>
-	<a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+	<a><i class="fas fa-shopping-cart"></i></a>
+
 </div>
 </body>
+<script>
+	  $(document).on('click', '.fa-shopping-cart', function (event) {
+    if (!Cookies.get('username')){
+      window.location.href = 'login.html';
+    }else {
+        window.location.href = 'cart.html';
+      }
+  });
+
+	  $(document).on('click', '.fa-user-circle', function (event) {
+    if (!Cookies.get('username')){
+      window.location.href = 'login.html';
+    }else {
+        window.location.href = 'profile.html';
+      }
+  });
+</script>
 </html>

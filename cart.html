@@ -8,7 +8,7 @@
 </head>
 <style>
  
-  .table, table{
+  .table, table, #cartItem{
     margin: auto;
     width:90%;
   }
@@ -18,10 +18,15 @@
   h3{
   	margin: auto;
   }
-  td{
+  td, th{
     text-align: left;
     padding-top: 10px;
+    font-size: 20px;
   }
+ /* table, #cartItem{
+  	position: relative;
+  	left: 80px;
+  }*/
 </style>
 <body>
 <!--Navigation bar-->
@@ -55,36 +60,39 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><button type="button" class="btn btn-danger" ng-click="">PURCHASE</button></td>
+		<td><button type="button" class="btn btn-danger">PURCHASE</button></td>
 	</tr>
 </table>
 
 <script>
 
 $(function (){
+	var cartId;
+
   $.get("http://localhost:8080/online-store-app/store/carts?username="+Cookies.get('username'), function(data){
     var sum = 0, taxes = 0, total = 0;
-    console.log(Cookies.get('username'));
+    	cartId = data.cartId;
+
         $('#cartItem').append(`
         <tr>
-       		<th style="width:100px;">Product</th>
-       		<th style="width:100px;">Price</th>
+       		<th style="width:623px;">    Product</th>
+       		<th style="width:200px;">Price</th>
        	</tr>
        		`);
     for(let i=0;i<data.items.length;i++){
-      //console.log(data.items[i].salePrice);
        $('#cartItem').append(`
         <tr>
-        	<td>`+data.items[i].productName+`</td>
+        	<td><i style="font-size:20px;" class="fas fa-trash-alt" id="`+data.items[i].productId+`"></i>`+data.items[i].productName+`</td>
         	<td>$`+data.items[i].salePrice+`</td>
         </tr>
           `);
+       //console.log(data.items[i].cardId);
     }
     //console.log(data.items.length);
     
     for(let i=0;i<data.items.length;i++){
     	sum += data.items[i].salePrice;
-    	console.log(sum);
+    	//console.log(sum);
     } 
     $('#cartSum').append(`
     	<p>$`+sum.toFixed(2)+`</p>
@@ -102,13 +110,36 @@ $(function (){
     });
 
   	
-
+  	$(document).on('click', '.fa-trash-alt', function (event) {
+      let removeItem = 'http://localhost:8080/online-store-app/store/carts?cartId='+cartId+'&productId='+event.target.id;
+      $.ajax({
+	    url: removeItem,
+	    type: 'DELETE',
+	    success: function(response) {
+        console.log(response);
+        window.location.reload(); 
+    	}
+	});
+    
+  });
   
+  $(document).on('click', '.btn-danger', function (event) {
+      let purchaseCart = 'http://localhost:8080/online-store-app/store/carts/purchase/'+cartId;
+      $.ajax({
+	    url: purchaseCart,
+	    type: 'PUT',
+	    success: function(response) {
+	    	alert('Cart Purchased!');
+	    	window.location.href = 'index.html'; 
+    	}
+	});
+    
   });
 
-$(function(){
   $("#nav-placeholder").load("header.html");
-});
+
+  });
+   
 
 </script>
 

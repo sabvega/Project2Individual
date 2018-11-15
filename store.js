@@ -7,17 +7,19 @@ $(function (){
 
     for (let i=0;i<data.length;i++){
       $('#tileView').append(`
-        <div class="column" onclick = "selectItem(`+data[i].itemId+`)" style="background-color:#aaa;">
+        <div class="column" style="background-color:#a2a276;">
+          <div class="btn" style="display:inline-block; width:90%;" onclick = "selectItem(`+data[i].itemId+`)" >
           <h2>`+data[i].name+`</h2>
           <p>$`+data[i].salePrice+`</p>
           <p>`+data[i].size+`</p>
-          <i class="fas fa-plus-circle" id=`+data[i].itemId+`></i>
+          </div>
+          <i style="display:inline-block; font-size:40px;" class="fas fa-plus-circle" id=`+data[i].itemId+`></i>
         </div>
         `);
     }
   });
 
-  $(document).on('click', '.fa-plus', function (event) {
+  $(document).on('click', '.fa-plus-circle', function (event) {
     if (!Cookies.get('username')){
       window.location.href = 'login.html';
     }else {

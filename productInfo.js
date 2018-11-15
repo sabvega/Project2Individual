@@ -4,14 +4,14 @@ $(function (){
 
   $.get("http://localhost:8080/online-store-app/store/items/"+ idValues[1], function(data){
       $('#productView').append(`
-        <div class="column"  style="background-color:#aaa;">
+        <div class="column"  style="background-color:#a2a276">
           <h2>Name: `+data.name+`</h2>
-          <p>Price: `+data.salePrice+`</p>
-          <p>Item Description: `+data.shortDescription+`</p>
-          <p>Brand: `+data.brandName+`</p>
-          <p>Size: `+data.size+`</p>
-          <p>Color: `+data.color+`</p>
-          <p>Gender: `+data.gender+`</p>
+          <p><b>Price:</b> $`+data.salePrice+`</p>
+          <p><b>Item Description:</b> `+data.shortDescription+`</p>
+          <p><b>Brand:</b> `+data.brandName+`</p>
+          <p><b>Size:</b> `+data.size+`</p>
+          <p><b>Color:</b> `+data.color+`</p>
+          <p><b>Gender:</b> `+data.gender+`</p>
         </div>
         `);
 
